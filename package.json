@@ -1,0 +1,10 @@
+{
+  "name": "Navy",
+  "version": "0.0.1",
+  "description": "A data scheme verification package",
+  "main": "index.js",
+  "repository": "https://github.com/asahiP/Navy.git",
+  "author": "Luke Pan <asahi0749@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
