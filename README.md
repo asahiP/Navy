@@ -16,7 +16,7 @@
 | Number |      `more`      |              必须大于N               |        `Number more: 10`        |         `11`         |
 |   -    |      `less`      |              必须小于N               |        `Number less: 10`        |         `9`          |
 |   -    |     `equal`      |              必须等于N               |       `Number equal: 10`        |         `10`         |
-|   -    |    `between`     |         必须介于min\|max之间         |     `Number between: 5|10`      |         `7`          |
+|   -    |    `between`     |         必须介于min\|max之间         |     `Number between: 5\|10`      |         `7`          |
 |   -    |     `phone`      |         必须为合法中国手机号         |         `Number phone`          |    `13000000000`     |
 |   -    |      `int`       |              必须为整数              |          `Number int`           |         `10`         |
 |   -    |     `float`      |             必须为浮点数             |         `Number float`          |        `10.1`        |
@@ -30,14 +30,14 @@
 |   -    |     `minLen`     |         字符串长度必须大于N          |       `String minLen: 5`        |      `'asahip'`      |
 |   -    |     `maxLen`     |         字符串长度必须小于N          |       `String maxLen: 5`        |       `'luke'`       |
 |   -    |      `len`       |         字符串长度必须等于N          |         `String len: 5`         |       `asahi`        |
-|   -    |    `between`     | 字符串长度必须介于minLen\|maxLen之间 |      `String between: 5|7`      |       `asahip`       |
+|   -    |    `between`     | 字符串长度必须介于minLen\|maxLen之间 |      `String between: 5\|7`      |       `asahip`       |
 |   -    |     `number`     |             必须为纯数字             |         `String number`         |       `'1024'`       |
 |   -    |      `uri`       |            必须为合法URI             |          `String uri`           |    `'github.com'`    |
 |   -    |      `mail`      |          必须为合法邮箱地址          |          `String mail`          | `'example@mail.com'` |
 |   -    |     `phone`      |         必须为合法中国手机号         |         `String phone`          |   `'13000000000'`    |
 |  Date  |     `after`      |           必须在指定日期后           |       `Date after: [...]`       |          -           |
 |   -    |     `before`     |           必须在指定日期前           |      `Date before: [...]`       |          -           |
-|   -    |    `between`     |         必须介于指定日期之间         |   `Date between: [...]|[...]`   |          -           |
+|   -    |    `between`     |         必须介于指定日期之间         |   `Date between: [...]\|[...]`   |          -           |
 |        |       `at`       |            必须在指定日期            |        `Date at: [...]`         |          -           |
 | Array  |        -         |           继承上述所有规则           |                -                |          -           |
 | Object |        -         |           继承上述所有规则           |                -                |          -           |
@@ -51,6 +51,7 @@
   * [规则名]与[规则参数]之间用分号[:]连接
   * [规则]与[规则]之间用与运算符[,]连接
   * 所有关键字忽视大小写
+  * 数组和对象支持多维嵌套
   * 
   * 数字: Number [rule]: [value]
   * 字符串: String [rule]: [numberValue], [rule]: [`stringValue`], [rule]: [`regexpValue`]
