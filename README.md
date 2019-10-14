@@ -5,6 +5,13 @@
 <h3 style="text-align: center">A data scheme verification package</h3>
 <br>
 
+## API
+
+| Methods |                   Arguments                   |             Return             |
+| :-----: | :-------------------------------------------: | :----------------------------: |
+| `rule`  | `[data, rule, [matchedText, misMatchedText]]` |               -                |
+| `judge` |                       -                       | `[{ status, text, rule },...]` |
+
 ## Rules
 
 | Class  |       Rule       |             Description              |             Example             |        Match         |
@@ -29,8 +36,8 @@
 |   -    |     `equal`      |               必须相等               |    `String equal: [string]`     |          -           |
 |   -    |     `minLen`     |         字符串长度必须大于N          |       `String minLen: 5`        |      `'asahip'`      |
 |   -    |     `maxLen`     |         字符串长度必须小于N          |       `String maxLen: 5`        |       `'luke'`       |
-|   -    |      `len`       |         字符串长度必须等于N          |         `String len: 5`         |       `asahi`        |
-|   -    |    `between`     | 字符串长度必须介于minLen\|maxLen之间 |      `String between: 5\|7`      |       `asahip`       |
+|   -    |      `len`       |         字符串长度必须等于N          |         `String len: 5`         |       `'asahi'`      |
+|   -    |    `between`     | 字符串长度必须介于minLen\|maxLen之间 |      `String between: 5\|7`      |       `'asahip'`       |
 |   -    |     `number`     |             必须为纯数字             |         `String number`         |       `'1024'`       |
 |   -    |      `uri`       |            必须为合法URI             |          `String uri`           |    `'github.com'`    |
 |   -    |      `mail`      |          必须为合法邮箱地址          |          `String mail`          | `'example@mail.com'` |
@@ -57,6 +64,69 @@
   * 字符串: String [rule]: [numberValue], [rule]: [`stringValue`], [rule]: [`regexpValue`]
   * 日期: Date [rule]: [numberValue], [rule]: [`stringValue`]
   */
+```
+
+## Example
+
+```javascript
+/** 
+ * 数组嵌套检查
+ * 数组永远只会参考下标为0的规则
+ */
+let navy = new Navy()
+
+navy
+  .rule([
+	[
+        { age: 24 }
+    ],
+    [
+        { age: 'Number more: 23' }
+    ]
+    [
+        'matched message',
+        'mismatched message'
+    ]
+  ])
+
+let result = navy.judge()
+```
+
+```javascript
+/** 对象嵌套检查 */
+let navy = new Navy()
+
+navy
+  .rule([
+    {
+        name: 'luke',
+        age: 24,
+        child: [
+            { name: 'kim', age: 10 }
+        ],
+        contact: {
+            phone: '13000000000',
+            mail: 'example@mail.com'
+        }
+    },
+    {
+        name: 'Required string',
+        age: 'Required number',
+        child: [
+            { name: 'Required String', age: 'Number less: 11' }
+        ],
+        contact: {
+            phone: 'String phone',
+            mail: 'String mail'
+        }
+    },
+    [
+        'matched message',
+        'mismatched message'
+    ]
+  ])
+
+let result = navy.judge()
 ```
 
 ## License
