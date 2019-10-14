@@ -9,7 +9,7 @@
 
 | Methods |                   Arguments                   |             Return             |
 | :-----: | :-------------------------------------------: | :----------------------------: |
-| `rule`  | `[data, rule, [matchedText, misMatchedText]]` |               -                |
+| `rule`  | `[data, rule, [matchedText, misMatchedText]]` |             `this`             |
 | `judge` |                       -                       | `[{ status, text, rule },...]` |
 
 ## Rules
