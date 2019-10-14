@@ -60,4 +60,4 @@
 
 ## License
 
-[MIT][https://github.com/asahiP/Navy/blob/master/LICENSE]
+[MIT](https://github.com/asahiP/Navy/blob/master/LICENSE)
