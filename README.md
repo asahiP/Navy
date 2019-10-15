@@ -16,7 +16,7 @@
 
 | Class  |       Rule       |             Description              |             Example             |        Match         |
 | :----: | :--------------: | :----------------------------------: | :-----------------------------: | :------------------: |
-| Public | `Required[type]` |  不能为空，[type]为空则不做类型检查  | `Required` or `Required string` |      `"String"`      |
+| Public | `Required[type]` |  不能为空，[type]为空则不做类型检查，type可以为`string`或`number`  | `Required` or `Required string` |      `"String"`      |
 |   -    |     `Empty`      |               必须为空               |             `Empty`             |        `null`        |
 |   -    |      `True`      |       必须为真，且类型为布尔值       |             `True`              |        `true`        |
 |   -    |     `Flase`      |       必须为假，且类型为布尔值       |             `Flase`             |       `false`        |
