@@ -1,16 +1,16 @@
 {
   "name": "navy-scheme",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A data scheme verification package",
-  "main": "main.js",
+  "main": "navy.js",
   "repository": "https://github.com/asahiP/Navy.git",
   "author": "Luke Pan <asahi0749@gmail.com>",
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "babel-jest": "^25.3.0",
-    "jest": "^25.3.0"
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0"
   }
 }
