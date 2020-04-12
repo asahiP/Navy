@@ -335,7 +335,7 @@ function str_alphabet (ref, val) {
   return isStr(val) && /^[a-zA-Z]+$/.test(val)
 }
 function str_alphanum (ref, val) {
-  return isStr(val) && /^[a-zA-Z\d]+$/.test(val)
+  return isStr(val) && /^[a-zA-Z\d]+$/.test(val) && /\d/.test(val) && /[a-zA-Z]/.test(val)
 }
 function str_URL (ref, val) {
   return isStr(val) && /^(https?:\/\/)?(\w+\.)?\w+\.[a-z]{2,}(\/.*)?$/i.test(val)
@@ -413,7 +413,7 @@ Schema_DATE.prototype = {
 
 /** Schema_DATE Methods Area */
 function date_required (ref, val) {
-  return isRequired(val) && !isNaN(new Date(val).getTime())
+  return isRequired(null, val) && !instanceOf(val, Boolean) && !isNaN(new Date(val).getTime())
 }
 function date_after (ref, val) {
   legalDateAssert(ref, MSG_REF_DATE)
@@ -421,7 +421,7 @@ function date_after (ref, val) {
   let refTime = new Date(ref).getTime()
   let valTime = new Date(val).getTime()
 
-  return !isNaN(valTime) && valTime > refTime
+  return date_required(null, val) && valTime > refTime
 }
 function date_before (ref, val) {
   legalDateAssert(ref, MSG_REF_DATE)
@@ -429,7 +429,7 @@ function date_before (ref, val) {
   let refTime = new Date(ref).getTime()
   let valTime = new Date(val).getTime()
 
-  return !isNaN(valTime) && valTime < refTime
+  return date_required(null, val) && valTime < refTime
 }
 function date_at (ref, val) {
   legalDateAssert(ref, MSG_REF_DATE)
@@ -437,7 +437,7 @@ function date_at (ref, val) {
   let refTime = new Date(ref).getTime()
   let valTime = new Date(val).getTime()
 
-  return !isNaN(valTime) && valTime === refTime
+  return date_required(null, val) && valTime === refTime
 }
 function date_max (ref, val) {
   legalDateAssert(ref, MSG_REF_DATE)
@@ -445,7 +445,7 @@ function date_max (ref, val) {
   let refTime = new Date(ref).getTime()
   let valTime = new Date(val).getTime()
 
-  return !isNaN(valTime) && valTime <= refTime
+  return date_required(null, val) && valTime <= refTime
 }
 function date_min (ref, val) {
   legalDateAssert(ref, MSG_REF_DATE)
@@ -453,7 +453,7 @@ function date_min (ref, val) {
   let refTime = new Date(ref).getTime()
   let valTime = new Date(val).getTime()
 
-  return !isNaN(valTime) && valTime >= refTime
+  return date_required(null, val) && valTime >= refTime
 }
 
 
@@ -496,30 +496,43 @@ Schema_ARR.prototype = {
     return this
   },
   items: function (ref) {
+    let duplicate = []
+    
     if (isArr(ref)) {
       if (ref.length === 0) {
         throw new TypeError('At least one Navy instance must be included')
       }
-
-      for (let item of ref) {
-        if (!isNavyType(item)) {
+      
+      duplicate = ref.concat()
+      for (let [key, item] of duplicate.entries()) {
+        if (instanceOf(item, Reference)) {
+          let child = new Schema_ANY().equal(item)
+          child.__parent = this
+          duplicate[key] = child
+        } else if (!isNavyType(item)) {
           throw new TypeError(MSG_NOT_NAVY_ARR)
+        } else {
+          item.__parent = this
         }
       }
     } else {
       throw new TypeError(MSG_PARAM_ARR)
     }
 
-    this.__rules.push(new Rule(arr_items, 'items', ref))
+    this.__rules.push(new Rule(arr_items, 'items', duplicate))
 
     return this
   },
   only: function (ref) {
-    if (!isNavyType(ref)) {
+    let duplicate = ref
+    if (instanceOf(duplicate, Reference)) {
+      duplicate = new Schema_ANY().equal(ref)
+    } else if (!isNavyType(ref)) {
       throw new TypeError('The parameter must be a Navy instance')
     }
 
-    this.__rules.push(new Rule(arr_only, 'only', ref))
+    duplicate.__parent = this
+    this.__rules.push(new Rule(arr_only, 'only', duplicate))
 
     return this
   }
@@ -566,7 +579,7 @@ function arr_items (ref, val) {
   return true
 }
 function arr_only (ref, val) {
-  if (!isArr(val)) {
+  if (!isArr(val) || val.length === 0) {
     return false
   }
 
@@ -612,6 +625,8 @@ Schema_OBJ.prototype = {
       this.__hasKeys = true
     }
 
+    this.__optional = omit(this.__optional, Object.keys(ref))
+
     return this
   },
   optional: function (ref) {
@@ -623,6 +638,8 @@ Schema_OBJ.prototype = {
       this.__rules.push(new Rule(obj_optional.bind(this), 'optional', null))
       this.__hasOpational = true
     }
+
+    this.__keys = omit(this.__keys, Object.keys(ref))
 
     return this
   }
@@ -668,9 +685,10 @@ function obj_keys (ref, val) {
   }
 
   let rules = this.__keys
+  let optional = this.__optional
   let refKeys = Object.keys(rules)
   let valKeys = Object.keys(val)
-  let optKeys = Object.keys(this.__optional)
+  let optKeys = Object.keys(optional)
   let keySet = new Set([...refKeys, ...valKeys, ...optKeys])
   let oLen = optKeys.length
   let rLen = refKeys.length
@@ -723,7 +741,21 @@ function validate (val) {
       let result = Object.assign({ val }, rule)
 
       if (rule.hasRef) {
-        if (instanceOf(this.__parent, Schema_OBJ)) {
+        let parent = this.__parent
+        if (instanceOf(parent, Schema_ARR)) {
+          while (!instanceOf(parent, Schema_OBJ) && parent !== null) {
+            parent = parent.__parent
+          }
+          this.__parent = parent
+        }
+        if (instanceOf(parent, Schema_OBJ)) {
+          if (instanceOf(parent.__parent, Schema_ARR)) {
+            parent = parent.__parent
+            while (!instanceOf(parent, Schema_OBJ) && parent !== null) {
+              parent = parent.__parent
+            }
+            this.__parent = parent
+          }
           if (!validateWithRef.apply(this, [rule, val])) {
             return false
           }
@@ -744,12 +776,27 @@ function validate (val) {
     }
   })
 }
+
 function validateSync (val) {
   this.__value = val
 
   for (let rule of this.__rules) {
     if (rule.hasRef) {
-      if (instanceOf(this.__parent, Schema_OBJ)) {
+      let parent = this.__parent
+      if (instanceOf(parent, Schema_ARR)) {
+        while (!instanceOf(parent, Schema_OBJ) && parent !== null) {
+          parent = parent.__parent
+        }
+        this.__parent = parent
+      }
+      if (instanceOf(parent, Schema_OBJ)) {
+        if (instanceOf(parent.__parent, Schema_ARR)) {
+          parent = parent.__parent
+          while (!instanceOf(parent, Schema_OBJ) && parent !== null) {
+            parent = parent.__parent
+          }
+          this.__parent = parent
+        }
         if (!validateWithRef.apply(this, [rule, val])) {
           return false
         }
@@ -823,11 +870,7 @@ function legalDateAssert (val, msg) {
 }
 
 function isEmpty (ref, val) {
-  return val === null
-    || val === undefined
-    || val === ''
-    || (instanceOf(val, Array) && val.length === 0)
-    || (instanceOf(val, Object) && Object.keys(val).length === 0)
+  return val === null || val === undefined
 }
 
 function isRequired (ref, val) {
@@ -924,6 +967,12 @@ function deepCompare (ref, val) {
   }
 
   return ref === val
+}
+
+function omit (obj, uselessKeys) {
+  return Object.keys(obj).reduce((acc, key) => {
+    return Object.assign(acc, uselessKeys.includes(key) ? {} : { [key]: obj[key] })
+  }, {})
 }
 
 Navy.prototype = {
