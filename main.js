@@ -14,8 +14,6 @@ const MSG_OBJ_ONLY = 'You can only use Navy.ref() in Navy.object()'
 const MSG_NOT_REF = 'The reference value could not be another reference'
 
 /** Class Area */
-function Navy () {}
-
 function Rule (call, name, ref) {
   this.call = call
   this.name = name
@@ -975,9 +973,7 @@ function omit (obj, uselessKeys) {
   }, {})
 }
 
-Navy.prototype = {
-  constructor: Navy,
-
+const Navy = {
   any: function () {
     return new Schema_ANY()
   },
@@ -1012,4 +1008,4 @@ Navy.prototype = {
   }
 }
 
-export default new Navy()
+export { Navy }

@@ -2,132 +2,310 @@
 
 ---
 
-<h3 style="text-align: center">A data scheme verification package</h3>
-<br>
+***A simple data validator for JavaScript***
 
-## API
+## Installation
 
-| Methods |                   Arguments                   |             Return             |
-| :-----: | :-------------------------------------------: | :----------------------------: |
-| `rule`  | `[data, rule, [matchedText, misMatchedText]]` |             `this`             |
-| `judge` |                       -                       | `[{ status, text, rule },...]` |
-
-## Rules
-
-| Class  |       Rule       |             Description              |             Example             |        Match         |
-| :----: | :--------------: | :----------------------------------: | :-----------------------------: | :------------------: |
-| Public | `Required[type]` |  不能为空，[type]为空则不做类型检查，type可以为`string`或`number`  | `Required` or `Required string` |      `"String"`      |
-|   -    |     `Empty`      |               必须为空               |             `Empty`             |        `null`        |
-|   -    |      `True`      |       必须为真，且类型为布尔值       |             `True`              |        `true`        |
-|   -    |     `Flase`      |       必须为假，且类型为布尔值       |             `Flase`             |       `false`        |
-| Number |      `more`      |              必须大于N               |        `Number more: 10`        |         `11`         |
-|   -    |      `less`      |              必须小于N               |        `Number less: 10`        |         `9`          |
-|   -    |     `equal`      |              必须等于N               |       `Number equal: 10`        |         `10`         |
-|   -    |    `between`     |         必须介于min\|max之间         |     `Number between: 5\|10`      |         `7`          |
-|   -    |     `phone`      |         必须为合法中国手机号         |         `Number phone`          |    `13000000000`     |
-|   -    |      `int`       |              必须为整数              |          `Number int`           |         `10`         |
-|   -    |     `float`      |             必须为浮点数             |         `Number float`          |        `10.1`        |
-|   -    |    `multiple`    |            必须为N的倍数             |      `Number multiple: 10`      |         `20`         |
-|   -    |    `divisor`     |            必须为N的因数             |      `Number divisor: 10`       |         `5`          |
-|   -    |    `positive`    |              必须为正数              |        `Number positive`        |         `10`         |
-|   -    |    `negative`    |              必须为负数              |        `Number negative`        |        `-10`         |
-| String |     `regexp`     |             必须匹配正则             |   `String regexp:  [regExp]`    |          -           |
-|   -    |    `includes`    |            必须包含字符串            |   `String includes: [string]`   |          -           |
-|   -    |     `equal`      |               必须相等               |    `String equal: [string]`     |          -           |
-|   -    |     `minLen`     |         字符串长度必须大于N          |       `String minLen: 5`        |      `'asahip'`      |
-|   -    |     `maxLen`     |         字符串长度必须小于N          |       `String maxLen: 5`        |       `'luke'`       |
-|   -    |      `len`       |         字符串长度必须等于N          |         `String len: 5`         |       `'asahi'`      |
-|   -    |    `between`     | 字符串长度必须介于minLen\|maxLen之间 |      `String between: 5\|7`      |       `'asahip'`       |
-|   -    |     `number`     |             必须为纯数字             |         `String number`         |       `'1024'`       |
-|   -    |      `uri`       |            必须为合法URI             |          `String uri`           |    `'github.com'`    |
-|   -    |      `mail`      |          必须为合法邮箱地址          |          `String mail`          | `'example@mail.com'` |
-|   -    |     `phone`      |         必须为合法中国手机号         |         `String phone`          |   `'13000000000'`    |
-|  Date  |     `after`      |           必须在指定日期后           |       `Date after: [...]`       |          -           |
-|   -    |     `before`     |           必须在指定日期前           |      `Date before: [...]`       |          -           |
-|   -    |    `between`     |         必须介于指定日期之间         |   `Date between: [...]\|[...]`   |          -           |
-|        |       `at`       |            必须在指定日期            |        `Date at: [...]`         |          -           |
-| Array  |        -         |           继承上述所有规则           |                -                |          -           |
-| Object |        -         |           继承上述所有规则           |                -                |          -           |
-
-## Grammar
-
-```javascript
- /**
-  * 规则语法:
-  * [数据类型][空格][规则名][:][规则参数]
-  * [规则名]与[规则参数]之间用分号[:]连接
-  * [规则]与[规则]之间用与运算符[,]连接
-  * 所有关键字忽视大小写
-  * 数组和对象支持多维嵌套
-  * 
-  * 数字: Number [rule]: [value]
-  * 字符串: String [rule]: [numberValue], [rule]: [`stringValue`], [rule]: [`regexpValue`]
-  * 日期: Date [rule]: [numberValue], [rule]: [`stringValue`]
-  */
-```
+- **npm：**`npm install navy-schema`
+- **yarn：**`yarn add navy-schema`
 
 ## Example
 
 ```javascript
-/** 
- * 数组嵌套检查
- * 数组永远只会参考下标为0的规则
- */
-let navy = new Navy()
+import { Navy } from 'navy-schema'
 
-navy
-  .rule([
-	[
-        { age: 24 }
-    ],
-    [
-        { age: 'Number more: 23' }
-    ]
-    [
-        'matched message',
-        'mismatched message'
-    ]
-  ])
+const schema = Navy.object()
+    .keys({
+        username: Navy.string()
+            .alphanum()
+            .min(6)
+            .max(18),
+        password: Navy.string()
+            .regexp(/^[a-z0-9_]{8, 20}$/i),
+        repeat_password: Navy.ref('password'),
 
-let result = navy.judge()
+        access_token: Navy.array()
+            .items([
+                Navy.String().required(),
+                Navy.number().required()
+            ])
+    })
+	.optional({
+        birthday: Navy.date().required(),
+        email: Navy.string().mail()
+    })
+
+const data = {
+    username: 'username001',
+    password: 'password',
+    repeat_password: 'password',
+    
+    access_token: ['access_token', 1024, 2048]
+}
+const another = Object.assign({
+    birthday: '2020-02-02',
+    email: 'example@mail.com'
+}, data)
+
+// -> true
+schema.validateSync(data)
+
+// -> true
+schema.validateSync(another)
+
+// -> false
+schema.validateSync({})
 ```
+
+## API
+
+#### any.required
+
+指定该值任意类型且不为空
+
+#### any.empty
+
+指定该值为 `undefined` 或 `null`
+
+#### any.equal(ref)
+
+指定该值与参照对象完全一致
+
+- `ref` - `any`，参照对象
+
+#### any.truthy
+
+指定该值必须为 `val == true`
+
+#### any.falsy
+
+指定该值必须为 `val == false`
+
+#### number.required
+
+指定该值为 `number` 类型且不为空
+
+#### number.greater(ref)
+
+指定该值为 `number` 类型且大于参照对象
+
+- `ref` - `number`，参照对象
+
+#### number.less(ref)
+
+指定该值为 `number` 类型且小于参照对象
+
+- `ref` - `number`，参照对象
+
+#### number.max(ref)
+
+指定该值为 `number` 类型且小于等于参照对象
+
+- `ref` - `number`，参照对象
+
+#### number.min(ref)
+
+指定该值为 `number` 类型且大于等于参照对象
+
+- `ref` - `number`，参照对象
+
+#### number.equal(ref)
+
+指定该值为 `number` 类型且等于参照对象
+
+- `ref` - `number`，参照对象
+
+#### number.int
+
+指定该值为 `number` 类型且为整数
+
+#### number.multiple(ref)
+
+指定该值为 `number` 类型且为参照对象的倍数
+
+- `ref` - `number`，参照对象
+
+#### number.divisor(ref)
+
+指定该值为 `number` 类型且为参照对象的因数
+
+- `ref` - `number`，参照对象
+
+#### number.positive
+
+指定该值为 `number` 类型且为正数
+
+#### number.negative
+
+指定该值为 `number` 类型且为负数
+
+#### string.required
+
+指定该值为 `string` 类型且不为空
+
+#### string.regexp(ref)
+
+指定该值为 `string` 类型且符合正则表达式
+
+- `ref` - `RegExp`，正则表达式
+
+#### string.includes(ref)
+
+指定该值为 `string` 类型且包含参照对象
+
+- `ref` - `string`，参照对象
+
+#### string.equal(ref)
+
+指定该值为 `string` 类型且与参照对象相等
+
+- `ref` - `string`，参照对象
+
+#### string.max(ref)
+
+指定该值为 `string` 类型且字符串长度小于等于参照对象
+
+- `ref` - `number`，参照对象
+
+#### string.min(ref)
+
+指定该值为 `string` 类型且字符串长度大于等于参照对象
+
+- `ref` - `number`，参照对象
+
+#### string.length(ref)
+
+指定该值为 `string` 类型且字符串长度等于参照对象
+
+- `ref` - `number`，参照对象
+
+#### string.number
+
+指定该值为 `string` 类型且只有数字组成
+
+#### string.alphabet
+
+指定该值为 `string` 类型且只有字母组成
+
+#### string.alphanum
+
+指定该值为 `string` 类型且只有字母和数字组成
+
+#### string.URL
+
+指定该值为 `string` 类型且为合法 `URL` 地址
+
+#### string.mail
+
+指定该值为 `string` 类型且为合法电子邮箱
+
+#### string.phone
+
+指定该值为 `string` 类型且符合**中华人民共和国**手机号段规则
+
+#### string.IDCard
+
+指定该值为 `string` 类型且符合**中华人民共和国**身份证号码验证规则
+
+#### date.required
+
+指定该值为 `ISOString`、`number` 或 `Date` 类型且不为空
+
+#### date.after(ref)
+
+指定该值为 `ISOString`、`number` 或 `Date` 类型且日期在参照对象之后
+
+- `ref` -  `ISOString`、`number` 或 `Date` ，参照对象
+
+#### date.before(ref)
+
+指定该值为 `ISOString`、`number` 或 `Date` 类型且日期在参照对象之前
+
+- `ref` -  `ISOString`、`number` 或 `Date` ，参照对象
+
+#### date.at(ref)
+
+指定该值为 `ISOString`、`number` 或 `Date` 类型且日期等于参照对象
+
+- `ref` -  `ISOString`、`number` 或 `Date` ，参照对象
+
+#### date.max(ref)
+
+指定该值为 `ISOString`、`number` 或 `Date` 类型且日期在参照对象之前（包含参照对象）
+
+- `ref` -  `ISOString`、`number` 或 `Date` ，参照对象
+
+#### date.min(ref)
+
+指定该值为 `ISOString`、`number` 或 `Date` 类型且日期在参照对象之后（包含参照对象）
+
+- `ref` -  `ISOString`、`number` 或 `Date` ，参照对象
+
+#### array.required
+
+指定该值为 `array` 类型且不为空
+
+#### array.max(ref)
+
+指定该值为 `array` 类型且数组长度小于等于参照对象
+
+- `ref` - `number` ，参照对象
+
+#### array.min(ref)
+
+指定该值为 `array` 类型且数组长度大于等于参照对象
+
+- `ref` - `number` ，参照对象
+
+#### array.length(ref)
+
+指定该值为 `array` 类型且数组长度等于参照对象
+
+- `ref` - `number` ，参照对象
+
+#### array.items(ref)
+
+指定该值为 `array` 类型且数组内的值符合参照数组中的任意规则
+
+- `ref` - `schema[]` ，值为 `Navy` 实例的数组
+
+#### array.only(ref)
+
+指定该值为 `array` 类型且数组内的值符合参照对象规则
+
+- `ref` - `schema` ，`Navy` 实例
+
+#### object.required
+
+指定该值为 `object` 类型且不为空
+
+#### object.keys(ref)
+
+指定该值为 `object` 类型且键值符合参照对象规则
+
+- `ref` - `object<string, schema>` ，参照对象
 
 ```javascript
-/** 对象嵌套检查 */
-let navy = new Navy()
-
-navy
-  .rule([
-    {
-        name: 'luke',
-        age: 24,
-        child: [
-            { name: 'kim', age: 10 }
-        ],
-        contact: {
-            phone: '13000000000',
-            mail: 'example@mail.com'
-        }
-    },
-    {
-        name: 'Required string',
-        age: 'Required number',
-        child: [
-            { name: 'Required String', age: 'Number less: 11' }
-        ],
-        contact: {
-            phone: 'String phone',
-            mail: 'String mail'
-        }
-    },
-    [
-        'matched message',
-        'mismatched message'
-    ]
-  ])
-
-let result = navy.judge()
+/** keys 和 optional 方法会根据调用顺序覆盖冲突的键值 */
 ```
+
+#### object.optional(ref)
+
+指定该值为 `object` 类型，该值可以为空或符合对象规则
+
+- `ref` - `object<string, schema>` ，参照对象
+
+```javascript
+/** keys 和 optional 方法会根据调用顺序覆盖冲突的键值 */
+```
+
+#### ref(key, ancestor)
+
+创建一个值的引用对象，其他 `Navy` 实例可以使用引用对象作为参照对象。这个方法只能在 `object` 中使用
+
+- `key` - `string`，需要引用的键名
+- `ancestor` - `number`，向父对象偏移的次数，每有一代 `object` 则偏移量加一
+
 
 ## License
 

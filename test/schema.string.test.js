@@ -1,4 +1,4 @@
-import Navy from '../main'
+import { Navy } from '../main'
 
 test('Navy.string.required', () => {
   expect(Navy.string().required().validateSync()).toBeFalsy()
@@ -218,7 +218,7 @@ test('Navy.string.mail', () => {
   expect(Navy.string().mail().validateSync('asdasd')).toBeFalsy()
   expect(Navy.string().mail().validateSync('asd123')).toBeFalsy()
   expect(Navy.string().mail().validateSync('https://github.com/asahiP/Navy')).toBeFalsy()
-  expect(Navy.string().mail().validateSync('asahi0749@gmail.com')).toBeTruthy()
+  expect(Navy.string().mail().validateSync('example@mail.com')).toBeTruthy()
 
   let schema = Navy.string().mail()
 
@@ -236,7 +236,7 @@ test('Navy.string.phone', () => {
   expect(Navy.string().phone().validateSync('asdasd')).toBeFalsy()
   expect(Navy.string().phone().validateSync('asd123')).toBeFalsy()
   expect(Navy.string().phone().validateSync('https://github.com/asahiP/Navy')).toBeFalsy()
-  expect(Navy.string().phone().validateSync('asahi0749@gphone.com')).toBeFalsy()
+  expect(Navy.string().phone().validateSync('example@mail.com')).toBeFalsy()
   expect(Navy.string().phone().validateSync('13200000000')).toBeTruthy()
 
   let schema = Navy.string().phone()
@@ -255,7 +255,7 @@ test('Navy.string.IDCard', () => {
   expect(Navy.string().IDCard().validateSync('asdasd')).toBeFalsy()
   expect(Navy.string().IDCard().validateSync('asd123')).toBeFalsy()
   expect(Navy.string().IDCard().validateSync('https://github.com/asahiP/Navy')).toBeFalsy()
-  expect(Navy.string().IDCard().validateSync('asahi0749@gIDCard.com')).toBeFalsy()
+  expect(Navy.string().IDCard().validateSync('example@mail.com')).toBeFalsy()
   expect(Navy.string().IDCard().validateSync('13200000000')).toBeFalsy()
   expect(Navy.string().IDCard().validateSync('220202202002020022')).toBeTruthy()
   expect(Navy.string().IDCard().validateSync('14062319821229451X')).toBeTruthy()

@@ -1,4 +1,4 @@
-import Navy from '../main'
+import { Navy } from '../main'
 
 test('Navy.any.required', () => {
   expect(Navy.any().required().validateSync()).toBeFalsy()
