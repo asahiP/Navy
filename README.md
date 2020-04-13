@@ -59,6 +59,16 @@ schema.validateSync({})
 
 ## API
 
+#### schema.validate(data)
+
+对指定数据进行校验，并返回一个 `Promise` 对象
+
+#### schema.validateSync(data)
+
+对指定数据进行校验，并返回布尔值
+
+---
+
 #### any.required
 
 指定该值任意类型且不为空
