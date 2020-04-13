@@ -30,7 +30,7 @@ const schema = Navy.object()
                 Navy.number().required()
             ])
     })
-	.optional({
+    .optional({
         birthday: Navy.date().required(),
         email: Navy.string().mail()
     })
@@ -311,7 +311,7 @@ schema.validateSync({})
 
 #### ref(key, ancestor)
 
-创建一个值的引用对象，其他 `Navy` 实例可以使用引用对象作为参照对象。这个方法只能在 `object` 中使用
+创建一个值的引用对象，其他 `Navy` 实例可以使用引用对象作为参照对象。这个方法只能在 `schema<object>` 中使用
 
 - `key` - `string`，需要引用的键名
 - `ancestor` - `number`，向父对象偏移的次数，每有一代 `object` 则偏移量加一
