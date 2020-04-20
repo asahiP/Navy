@@ -14,6 +14,15 @@ const MSG_OBJ_ONLY = 'You can only use Navy.ref() in Navy.object()'
 const MSG_NOT_REF = 'The reference value could not be another reference'
 
 /** Class Area */
+function Schema () {
+  this.__rules = []
+  this.__parent = null
+  this.__value = undefined
+}
+
+Schema.prototype.validate = validate
+Schema.prototype.validateSync = validateSync
+
 function Rule (call, name, ref) {
   this.call = call
   this.name = name
@@ -27,15 +36,12 @@ function Reference (key, ancestor) {
 }
 
 function Schema_ANY () {
-  this.__rules = []
-  this.__parent = null
-  this.__value = undefined
+  Schema.call(this)
 }
 
-Schema_ANY.prototype = {
+Schema_ANY.prototype = Object.create(Schema.prototype)
+Object.assign(Schema_ANY.prototype, {
   constructor: Schema_ANY,
-  validate,
-  validateSync,
 
   required: function () {
     this.__rules.push(new Rule(isRequired, 'required', null))
@@ -62,18 +68,15 @@ Schema_ANY.prototype = {
 
     return this
   }
-}
+})
 
 function Schema_NUM () {
-  this.__rules = []
-  this.__parent = null
-  this.__value = undefined
+  Schema.call(this)
 }
 
-Schema_NUM.prototype = {
+Schema_NUM.prototype = Object.create(Schema.prototype)
+Object.assign(Schema_NUM.prototype, {
   constructor: Schema_NUM,
-  validate,
-  validateSync,
 
   required: function () {
     this.__rules.push(new Rule(num_required, 'required', null))
@@ -144,7 +147,7 @@ Schema_NUM.prototype = {
 
     return this 
   },
-}
+})
 
 /** Schema_NUM Methods Area */
 function num_required (ref, val) {
@@ -198,15 +201,12 @@ function num_negative (ref, val) {
 
 
 function Schema_STR () {
-  this.__rules = []
-  this.__parent = null
-  this.__value = undefined
+  Schema.call(this)
 }
 
-Schema_STR.prototype = {
+Schema_STR.prototype = Object.create(Schema.prototype)
+Object.assign(Schema_STR.prototype, {
   constructor: Schema_STR,
-  validate,
-  validateSync,
 
   required: function () {
     this.__rules.push(new Rule(str_required, 'required', null))
@@ -290,7 +290,9 @@ Schema_STR.prototype = {
 
     return this
   }
-}
+})
+
+
 
 /** Schema_STR Methods Area */
 function str_required (ref, val) {
@@ -357,15 +359,12 @@ function str_IDCard (ref, val) {
 
 
 function Schema_DATE () {
-  this.__rules = []
-  this.__parent = null
-  this.__value = undefined
+  Schema.call(this)
 }
 
-Schema_DATE.prototype = {
+Schema_DATE.prototype = Object.create(Schema.prototype)
+Object.assign(Schema_DATE.prototype, {
   constructor: Schema_DATE,
-  validate,
-  validateSync,
 
   required: function () {
     this.__rules.push(new Rule(date_required, 'required', null))
@@ -407,7 +406,8 @@ Schema_DATE.prototype = {
 
     return this
   },
-}
+})
+
 
 /** Schema_DATE Methods Area */
 function date_required (ref, val) {
@@ -457,15 +457,12 @@ function date_min (ref, val) {
 
 
 function Schema_ARR () {
-  this.__rules = []
-  this.__parent = null
-  this.__value = undefined
+  Schema.call(this)
 }
 
-Schema_ARR.prototype = {
+Schema_ARR.prototype = Object.create(Schema.prototype)
+Object.assign(Schema_ARR.prototype, {
   constructor: Schema_ARR,
-  validate,
-  validateSync,
 
   required: function () {
     this.__rules.push(new Rule(arr_required, 'required', null))
@@ -534,7 +531,8 @@ Schema_ARR.prototype = {
 
     return this
   }
-}
+})
+
 
 /** Schema_ARR Methods Area */
 function arr_required (ref, val) {
@@ -593,9 +591,8 @@ function arr_only (ref, val) {
 
 
 function Schema_OBJ () {
-  this.__rules = []
-  this.__parent = null
-  this.__value = undefined
+  Schema.call(this)
+
   this.__children = {}
   this.__optional = {}
   this.__keys = {}
@@ -603,10 +600,9 @@ function Schema_OBJ () {
   this.__hasKeys = false
 }
 
-Schema_OBJ.prototype = {
+Schema_OBJ.prototype = Object.create(Schema.prototype)
+Object.assign(Schema_OBJ.prototype, {
   constructor: Schema_OBJ,
-  validate,
-  validateSync,
 
   required: function (ref) {
     this.__rules.push(new Rule(obj_required, 'required', null))
@@ -641,7 +637,7 @@ Schema_OBJ.prototype = {
 
     return this
   }
-}
+})
 
 /** Schema_OBJ Methods Area */
 function obj_required (ref, val) {

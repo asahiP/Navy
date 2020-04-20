@@ -1,6 +1,6 @@
 {
   "name": "navy-schema",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple data validator for JavaScript",
   "main": "main.js",
   "repository": "https://github.com/asahiP/Navy.git",
@@ -15,5 +15,12 @@
   },
   "scripts": {
     "test": "jest"
-  }
+  },
+  "files": [
+    "LICENSE",
+    "main.d.ts",
+    "main.js",
+    "package.json",
+    "README.md"
+  ]
 }
