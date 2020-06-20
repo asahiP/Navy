@@ -1,8 +1,8 @@
 {
   "name": "navy-schema",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A simple data validator for JavaScript",
-  "main": "main.js",
+  "main": "main.ts",
   "repository": "https://github.com/asahiP/Navy.git",
   "author": "Luke Pan <asahi0749@gmail.com>",
   "license": "MIT",
@@ -10,6 +10,7 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
+    "@babel/preset-typescript": "^7.10.1",
     "babel-jest": "^25.3.0",
     "jest": "^25.3.0"
   },

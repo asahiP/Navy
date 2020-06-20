@@ -1,15 +1,15 @@
 import { Navy } from '../main'
 
 test('Navy.object.required', () => {
-  expect(Navy.object().required().validateSync()).toBeFalsy()
-  expect(Navy.object().required().validateSync([])).toBeFalsy()
-  expect(Navy.object().required().validateSync(true)).toBeFalsy()
-  expect(Navy.object().required().validateSync(null)).toBeFalsy()
-  expect(Navy.object().required().validateSync(undefined)).toBeFalsy()
-  expect(Navy.object().required().validateSync('asdasdad')).toBeFalsy()
-  expect(Navy.object().required().validateSync(1)).toBeFalsy()
+  expect(Navy.object().required().validate()).toBeFalsy()
+  expect(Navy.object().required().validate([])).toBeFalsy()
+  expect(Navy.object().required().validate(true)).toBeFalsy()
+  expect(Navy.object().required().validate(null)).toBeFalsy()
+  expect(Navy.object().required().validate(undefined)).toBeFalsy()
+  expect(Navy.object().required().validate('asdasdad')).toBeFalsy()
+  expect(Navy.object().required().validate(1)).toBeFalsy()
   
-  expect(Navy.object().required().validateSync({})).toBeTruthy()
+  expect(Navy.object().required().validate({})).toBeTruthy()
 })
 
 test('Navy.object.keys', () => {
@@ -26,13 +26,13 @@ test('Navy.object.keys', () => {
     c: Navy.any().required()
   })
 
-  expect(schema.validateSync('1')).toBeFalsy()
-  expect(schema.validateSync([])).toBeFalsy()
-  expect(schema.validateSync(true)).toBeFalsy()
-  expect(schema.validateSync(null)).toBeFalsy()
-  expect(schema.validateSync(undefined)).toBeFalsy()
+  expect(schema.validate('1')).toBeFalsy()
+  expect(schema.validate([])).toBeFalsy()
+  expect(schema.validate(true)).toBeFalsy()
+  expect(schema.validate(null)).toBeFalsy()
+  expect(schema.validate(undefined)).toBeFalsy()
 
-  expect(schema.validateSync({ a: 123, b: '123', c: {} })).toBeTruthy()
+  expect(schema.validate({ a: 123, b: '123', c: {} })).toBeTruthy()
 })
 
 test('Navy.object.optional', () => {
@@ -49,19 +49,19 @@ test('Navy.object.optional', () => {
     c: Navy.any().required()
   })
 
-  expect(schema.validateSync('1')).toBeFalsy()
-  expect(schema.validateSync([])).toBeFalsy()
-  expect(schema.validateSync(true)).toBeFalsy()
-  expect(schema.validateSync(null)).toBeFalsy()
-  expect(schema.validateSync(undefined)).toBeFalsy()
+  expect(schema.validate('1')).toBeFalsy()
+  expect(schema.validate([])).toBeFalsy()
+  expect(schema.validate(true)).toBeFalsy()
+  expect(schema.validate(null)).toBeFalsy()
+  expect(schema.validate(undefined)).toBeFalsy()
 
-  expect(schema.validateSync({ a: 123, b: '123', c: {} })).toBeTruthy()
-  expect(schema.validateSync({ a: 123 })).toBeTruthy()
-  expect(schema.validateSync({ b: '123'})).toBeTruthy()
-  expect(schema.validateSync({ c: {} })).toBeTruthy()
-  expect(schema.validateSync({ a: 123, b: '123' })).toBeTruthy()
-  expect(schema.validateSync({ b: '123', c: {} })).toBeTruthy()
-  expect(schema.validateSync({ a: 123, c: {} })).toBeTruthy()
+  expect(schema.validate({ a: 123, b: '123', c: {} })).toBeTruthy()
+  expect(schema.validate({ a: 123 })).toBeTruthy()
+  expect(schema.validate({ b: '123'})).toBeTruthy()
+  expect(schema.validate({ c: {} })).toBeTruthy()
+  expect(schema.validate({ a: 123, b: '123' })).toBeTruthy()
+  expect(schema.validate({ b: '123', c: {} })).toBeTruthy()
+  expect(schema.validate({ a: 123, c: {} })).toBeTruthy()
 })
 
 test('Navy.object', () => {
@@ -90,8 +90,8 @@ test('Navy.object', () => {
     repeatpass: 'password1'
   }
 
-  expect(schema.validateSync(date)).toBeTruthy()
-  expect(schema.validateSync(Object.assign(date, {
+  expect(schema.validate(date)).toBeTruthy()
+  expect(schema.validate(Object.assign(date, {
     sex: 'man'
   }))).toBeTruthy()
 
@@ -99,7 +99,7 @@ test('Navy.object', () => {
     birthday: Navy.date().required()
   })
 
-  expect(schema.validateSync({
+  expect(schema.validate({
     name: 'Luke',
     age: 20,
 
@@ -147,7 +147,7 @@ test('Navy.ref', () => {
     u: Navy.ref('h.j.o.p')
   })
 
-  expect(schema.validateSync({
+  expect(schema.validate({
     a: 10,
     b: '1234567890',
 

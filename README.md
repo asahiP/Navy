@@ -26,7 +26,7 @@ const schema = Navy.object()
 
         access_token: Navy.array()
             .items([
-                Navy.String().required(),
+                Navy.string().required(),
                 Navy.number().required()
             ])
     })
@@ -48,15 +48,14 @@ const another = Object.assign({
 }, data)
 
 // -> true
-schema.validateSync(data)
+schema.validate(data)
 
 // -> true
-schema.validateSync(another)
+schema.validate(another)
 
 // -> false
-schema.validateSync({})
+schema.validate({})
 ```
-
 ## API
 
 #### schema.validate(data)
@@ -67,6 +66,44 @@ schema.validateSync({})
 
 对指定数据进行校验，并返回布尔值
 
+> `schema.validate` 在 `v1.1.0` 后的版本移除，`schema.validateSync` 更名为 `schema.validate`
+
+#### schema.effect(status, name, hook)
+
+向 `Navy` 添加钩子，在检验后调用；替换原本的 `schema.validate` 函数
+
+- `status` - 检验结果，值为 `passed` | `failed`
+- `name` - 需要添加钩子的规则名，值为 `string` 类型
+- `hook` - 钩子函数，会按顺序传入规则函数的参数 `ref` 和 `schema.validate` 函数的参数 `val`
+```javascript
+// Example
+import { Navy } from 'navy-schema'
+
+let i = 0, j = 0, k = 0
+const schema = Navy.object()
+	.keys({
+        username: Navy.string()
+            .alphanum()
+        		.effect('passed', 'alphanum', () => i = 1),
+        password: Navy.string()
+            .regexp(/^[a-z0-9_]{8, 20}$/i)
+                .effect('passed', 'regexp', () => j = 1),
+        repeat_password: Navy.ref('password'),
+    })
+	.effect('passed', 'keys', () => k = 1)
+
+const data = {
+    username: 'username001',
+    password: 'password',
+    repeat_password: 'password',
+}
+
+// -> true
+schema.validate(data)
+
+// -> 1, 1, 1
+console.log(i, j, k)
+```
 ---
 
 #### any.required
@@ -301,7 +338,7 @@ schema.validateSync({})
 
 #### object.optional(ref)
 
-指定该值为 `object` 类型，该值可以为空或符合对象规则
+指定该值为 `object` 类型，该值可以为未定义或符合对象规则
 
 - `ref` - `object<string, schema>` ，参照对象
 
@@ -316,6 +353,23 @@ schema.validateSync({})
 - `key` - `string`，需要引用的键名
 - `ancestor` - `number`，向父对象偏移的次数，每有一代 `object` 则偏移量加一
 
+```javascript
+// Example
+import { Navy } from 'navy-schema'
+
+const schema = Navy.object()
+    .keys({
+      a: Navy.any().equal('luke'),
+      b: Navy.any().equal(Navy.ref('a')),
+      c: Navy.ref('a'),
+      d: {
+          e: Navy.ref('a', 1)
+      }
+    })
+
+// -> true
+schema.validate({ a: 'luke', b: 'luke', c: 'luke', d: { e: 'luke' } })
+```
 
 ## License
 

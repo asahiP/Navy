@@ -1,24 +1,23 @@
 import { Navy } from '../main'
 
 test('Navy.array.required', () => {
-  expect(Navy.array().required().validateSync()).toBeFalsy()
-  // expect(Navy.array().required().validateSync([])).toBeFalsy()
-  expect(Navy.array().required().validateSync({})).toBeFalsy()
-  expect(Navy.array().required().validateSync(true)).toBeFalsy()
-  expect(Navy.array().required().validateSync(null)).toBeFalsy()
-  expect(Navy.array().required().validateSync(undefined)).toBeFalsy()
-  expect(Navy.array().required().validateSync('asdasdad')).toBeFalsy()
+  expect(Navy.array().required().validate()).toBeFalsy()
+  expect(Navy.array().required().validate({})).toBeFalsy()
+  expect(Navy.array().required().validate(true)).toBeFalsy()
+  expect(Navy.array().required().validate(null)).toBeFalsy()
+  expect(Navy.array().required().validate(undefined)).toBeFalsy()
+  expect(Navy.array().required().validate('asdasdad')).toBeFalsy()
   
-  expect(Navy.array().required().validateSync([])).toBeTruthy()
-  expect(Navy.array().required().validateSync([1])).toBeTruthy()
-  expect(Navy.array().required().validateSync(['1'])).toBeTruthy()
+  expect(Navy.array().required().validate([])).toBeTruthy()
+  expect(Navy.array().required().validate([1])).toBeTruthy()
+  expect(Navy.array().required().validate(['1'])).toBeTruthy()
 })
 
 test('Navy.array.max', () => {
-  expect(Navy.array().max(5).validateSync([1, 2, 3, 4, 5, 6])).toBeFalsy()
+  expect(Navy.array().max(5).validate([1, 2, 3, 4, 5, 6])).toBeFalsy()
 
-  expect(Navy.array().max(5).validateSync([1, 2, 3, 4, 5])).toBeTruthy()
-  expect(Navy.array().max(5).validateSync([1, 2, 3, 4])).toBeTruthy()
+  expect(Navy.array().max(5).validate([1, 2, 3, 4, 5])).toBeTruthy()
+  expect(Navy.array().max(5).validate([1, 2, 3, 4])).toBeTruthy()
 
   let schema = Navy.array()
   expect(schema.max.bind(schema, '1')).toThrow()
@@ -30,19 +29,19 @@ test('Navy.array.max', () => {
 
   schema.max(5)
 
-  expect(schema.validateSync('1')).toBeFalsy()
-  // expect(schema.validateSync([])).toBeFalsy()
-  expect(schema.validateSync({})).toBeFalsy()
-  expect(schema.validateSync(true)).toBeFalsy()
-  expect(schema.validateSync(null)).toBeFalsy()
-  expect(schema.validateSync(undefined)).toBeFalsy()
+  expect(schema.validate('1')).toBeFalsy()
+  // expect(schema.validate([])).toBeFalsy()
+  expect(schema.validate({})).toBeFalsy()
+  expect(schema.validate(true)).toBeFalsy()
+  expect(schema.validate(null)).toBeFalsy()
+  expect(schema.validate(undefined)).toBeFalsy()
 })
 
 test('Navy.array.min', () => {
-  expect(Navy.array().min(5).validateSync([1, 2, 3, 4])).toBeFalsy()
+  expect(Navy.array().min(5).validate([1, 2, 3, 4])).toBeFalsy()
   
-  expect(Navy.array().min(5).validateSync([1, 2, 3, 4, 5])).toBeTruthy()
-  expect(Navy.array().min(5).validateSync([1, 2, 3, 4, 5, 6])).toBeTruthy()
+  expect(Navy.array().min(5).validate([1, 2, 3, 4, 5])).toBeTruthy()
+  expect(Navy.array().min(5).validate([1, 2, 3, 4, 5, 6])).toBeTruthy()
 
   let schema = Navy.array()
   expect(schema.min.bind(schema, '1')).toThrow()
@@ -54,19 +53,19 @@ test('Navy.array.min', () => {
 
   schema.min(5)
 
-  expect(schema.validateSync('1')).toBeFalsy()
-  // expect(schema.validateSync([])).toBeFalsy()
-  expect(schema.validateSync({})).toBeFalsy()
-  expect(schema.validateSync(true)).toBeFalsy()
-  expect(schema.validateSync(null)).toBeFalsy()
-  expect(schema.validateSync(undefined)).toBeFalsy()
+  expect(schema.validate('1')).toBeFalsy()
+  // expect(schema.validate([])).toBeFalsy()
+  expect(schema.validate({})).toBeFalsy()
+  expect(schema.validate(true)).toBeFalsy()
+  expect(schema.validate(null)).toBeFalsy()
+  expect(schema.validate(undefined)).toBeFalsy()
 })
 
 test('Navy.array.length', () => {
-  expect(Navy.array().length(5).validateSync([1, 2, 3, 4])).toBeFalsy()
-  expect(Navy.array().length(5).validateSync([1, 2, 3, 4, 5, 6])).toBeFalsy()
+  expect(Navy.array().length(5).validate([1, 2, 3, 4])).toBeFalsy()
+  expect(Navy.array().length(5).validate([1, 2, 3, 4, 5, 6])).toBeFalsy()
   
-  expect(Navy.array().length(5).validateSync([1, 2, 3, 4, 5])).toBeTruthy()
+  expect(Navy.array().length(5).validate([1, 2, 3, 4, 5])).toBeTruthy()
 
   let schema = Navy.array()
   expect(schema.length.bind(schema, '1')).toThrow()
@@ -78,12 +77,12 @@ test('Navy.array.length', () => {
 
   schema.length(5)
 
-  expect(schema.validateSync('1')).toBeFalsy()
-  // expect(schema.validateSync([])).toBeFalsy()
-  expect(schema.validateSync({})).toBeFalsy()
-  expect(schema.validateSync(true)).toBeFalsy()
-  expect(schema.validateSync(null)).toBeFalsy()
-  expect(schema.validateSync(undefined)).toBeFalsy()
+  expect(schema.validate('1')).toBeFalsy()
+  // expect(schema.validate([])).toBeFalsy()
+  expect(schema.validate({})).toBeFalsy()
+  expect(schema.validate(true)).toBeFalsy()
+  expect(schema.validate(null)).toBeFalsy()
+  expect(schema.validate(undefined)).toBeFalsy()
 })
 
 test('Navy.array.items', () => {
@@ -102,13 +101,13 @@ test('Navy.array.items', () => {
   .max(5)
   .min(2)
 
-  expect(schema.validateSync(['1'])).toBeFalsy()
-  expect(schema.validateSync([4, 4])).toBeFalsy()
-  expect(schema.validateSync([11, 11])).toBeFalsy()
+  expect(schema.validate(['1'])).toBeFalsy()
+  expect(schema.validate([4, 4])).toBeFalsy()
+  expect(schema.validate([11, 11])).toBeFalsy()
 
-  expect(schema.validateSync([5, 5, 5])).toBeTruthy()
-  expect(schema.validateSync(['1', '1', '1'])).toBeTruthy()
-  expect(schema.validateSync([5, '1', '1'])).toBeTruthy()
+  expect(schema.validate([5, 5, 5])).toBeTruthy()
+  expect(schema.validate(['1', '1', '1'])).toBeTruthy()
+  expect(schema.validate([5, '1', '1'])).toBeTruthy()
 })
 
 test('Navy.array.only', () => {
@@ -122,10 +121,10 @@ test('Navy.array.only', () => {
 
   schema.only(Navy.number().max(10).min(5))
 
-  expect(schema.validateSync(['1'])).toBeFalsy()
-  expect(schema.validateSync([4, 4])).toBeFalsy()
-  expect(schema.validateSync([11, 11])).toBeFalsy()
-  expect(schema.validateSync([5, '1', '1'])).toBeFalsy()
+  expect(schema.validate(['1'])).toBeFalsy()
+  expect(schema.validate([4, 4])).toBeFalsy()
+  expect(schema.validate([11, 11])).toBeFalsy()
+  expect(schema.validate([5, '1', '1'])).toBeFalsy()
 
-  expect(schema.validateSync([5, 5, 5])).toBeTruthy()
+  expect(schema.validate([5, 5, 5])).toBeTruthy()
 })
