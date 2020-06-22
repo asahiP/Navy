@@ -26,7 +26,6 @@ function rebuild (ref) {
 
       duplicate[key] = child
       child.__setParent__(this)
-      this.__children__[key] = child
     } else if (val instanceof Schema) {
       val.__setParent__(this)
     } else if (val instanceof Reference) {
@@ -93,7 +92,6 @@ type Name = 'required'
   | 'keys' | 'optional'
 
 class SchemaObj extends Schema {
-  private __children__ = {}
   private __optional__ = {}
   private __keys__ = {}
   private __hasOpational__ = false

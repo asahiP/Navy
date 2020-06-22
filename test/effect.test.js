@@ -109,3 +109,25 @@ test('Navy.effect.withRef', () => {
     })
   expect(t).toBe(1)
 })
+
+test('Navy.effect.withArgs', () => {
+  let t = null
+  let t2 = null
+
+  Navy.any()
+    .equal('123')
+      .effect('failed', 'equal', (ref, val) => t = ref + val)
+    .validate('456')
+  Navy.object()
+    .keys({
+      a: Navy.any().equal('123'),
+      b: Navy.any().equal(Navy.ref('a'))
+          .effect('failed', 'equal', (ref, val) => t2 = ref + val)
+    })
+    .validate({
+      a: '123',
+      b: '456'
+    })
+  expect(t).toBe('123456')
+  expect(t2).toBe('123456')
+})
