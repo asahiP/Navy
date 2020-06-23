@@ -13,7 +13,7 @@ type StrName = 'required' | 'regexp' | 'includes' | 'equal' | 'max' | 'min' | 'l
 
 interface Schema {
   effect (status: string, name: string, hook: Function): this
-  validate (val: any): this
+  validate (val: any): boolean
 }
 interface SchemaMap {
   [key: string]: SchemaSubclass | Reference
