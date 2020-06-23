@@ -10,11 +10,11 @@ const isObj = (val: any) =>
   && val !== null
   && !(val instanceof Schema)
   && !(val instanceof Reference)
-const isNum = val => typeof val === 'number'
-const isStr = val => typeof val === 'string'
-const isRegExp = val => val instanceof RegExp
+const isNum = (val: any) => typeof val === 'number'
+const isStr = (val: any) => typeof val === 'string'
+const isRegExp = (val: any) => val instanceof RegExp
 
-function deepCompare (ref, val) {
+function deepCompare (ref: any, val: any) {
   if (isArr(ref)) {
     if (isArr(val)) {
       let rLen = ref.length

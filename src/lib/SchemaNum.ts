@@ -1,147 +1,139 @@
 'use strict';
 
 import { Schema } from './Schema'
+import { Reference } from './Reference'
 import { Rule } from './Rule'
 import { typeAssert, isNum } from './utils'
 import { MSG_PARAM_NOT_NUM, MSG_REF_NOT_NUM } from './message'
 
 
 
-function required (ref, val) {
+function required (ref: any, val: any) {
   return isNum(val)
 }
 
-function greater (ref, val) {
+function greater (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isNum(val) && val > ref
 }
 
-function less (ref, val) {
+function less (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isNum(val) && val < ref
 }
 
-function max (ref, val) {
+function max (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isNum(val) && val <= ref
 }
 
-function min (ref, val) {
+function min (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isNum(val) && val >= ref
 }
 
-function equal (ref, val) {
+function equal (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isNum(val) && ref === val
 }
 
-function int (ref, val) {
+function int (ref: any, val: any) {
   return isNum(val) && (val % 1 === 0)
 }
 
-function multiple (ref, val) {
+function multiple (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isNum(val) && (val / ref % 1 === 0)
 }
 
-function divisor (ref, val) {
+function divisor (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isNum(val) && (ref / val % 1 === 0)
 }
 
-function positive (ref, val) {
+function positive (ref: any, val: any) {
   return isNum(val) && val > 0
 }
 
-function negative (ref, val) {
+function negative (ref: any, val: any) {
   return isNum(val) && val < 0
 }
 
-type Name = 'required'
-  | 'greater' | 'less'
-  | 'max' | 'min' | 'equal'
-  | 'int' | 'multiple'| 'divisor'
-  | 'positive' | 'negative'
+
 
 class SchemaNum extends Schema {
-  effect (status: Status, name: Name, hook: Hook) {
-    this.__hooks__[status][name] = hook
-
-    return this
-  }
   required () {
     this.__rules__.push(new Rule(required, 'required', null))
 
     return this
   }
-  greater (ref) {
+  greater (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(greater, 'greater', ref))
 
     return this
   }
-  less (ref) {
+  less (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(less, 'less', ref))
 
     return this
   }
-  max (ref) {
+  max (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(max, 'max', ref))
 
     return this
   }
-  min (ref) {
+  min (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(min, 'min', ref))
 
     return this
   }
-  equal (ref) {
+  equal (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(equal, 'equal', ref))
 
     return this
   }
-  int (ref) {
+  int () {
     this.__rules__.push(new Rule(int, 'int', null))
 
     return this
   }
-  multiple (ref) {
+  multiple (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(multiple, 'multiple', ref))
 
     return this
   }
-  divisor (ref) {
+  divisor (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(divisor, 'divisor', ref))
 
     return this
   }
-  positive (ref) {
+  positive () {
     this.__rules__.push(new Rule(positive, 'positive', null))
 
     return this 
   }
-  negative (ref) {
+  negative () {
     this.__rules__.push(new Rule(negative, 'negative', null))
 
     return this 

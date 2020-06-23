@@ -5,27 +5,31 @@ import { SchemaAny } from './SchemaAny'
 import { Rule } from './Rule'
 import { Reference } from './Reference'
 import { typeAssert, isNum, isArr } from './utils'
-import { MSG_PARAM_NOT_NUM, MSG_REF_NOT_NUM, MSG_NOT_NAVY_ARR, MSG_PARAM_NOT_ARR } from './message'
+import {
+  MSG_PARAM_NOT_NUM, MSG_REF_NOT_NUM,
+  MSG_PARAM_NOT_ARR,
+  MSG_NOT_NAVY_ARR, MSG_NOT_NAVY
+} from './message'
 
-function required (ref, val) {
+function required (ref: any, val: any) {
   return isArr(val)
 }
-function max (ref, val) {
+function max (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isArr(val) && val.length <= ref
 }
-function min (ref, val) {
+function min (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isArr(val) && val.length >= ref
 }
-function length (ref, val) {
+function length (ref: any, val: any) {
   typeAssert(ref, MSG_REF_NOT_NUM, isNum)
 
   return isArr(val) && val.length === ref
 }
-function items (ref, val) {
+function items (ref: any, val: any) {
   if (!isArr(val) || val.length === 0) {
     return false
   }
@@ -46,7 +50,7 @@ function items (ref, val) {
 
   return true
 }
-function only (ref, val) {
+function only (ref: any, val: any) {
   if (!isArr(val) || val.length === 0) {
     return false
   }
@@ -59,46 +63,42 @@ function only (ref, val) {
 
   return true
 }
-type Name = 'required' | 'max' | 'min' | 'length' | 'items' | 'only'
+
+interface SchemaSubclass extends Schema {}
 
 class SchemaArr extends Schema {
-  effect (status: Status, name: Name, hook: Hook) {
-    this.__hooks__[status][name] = hook
-
-    return this
-  }
   required () {
     this.__rules__.push(new Rule(required, 'required', null))
 
     return this
   }
-  max (ref) {
+  max (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(max, 'max', ref))
 
     return this
   }
-  min (ref) {
+  min (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(min, 'min', ref))
 
     return this
   }
-  length (ref) {
+  length (ref: number | Reference) {
     typeAssert(ref, MSG_PARAM_NOT_NUM, isNum)
 
     this.__rules__.push(new Rule(length, 'length', ref))
 
     return this
   }
-  items (ref) {
+  items (ref: Array<SchemaSubclass | Reference>) {
     let duplicate = []
     
     if (isArr(ref)) {
       if (ref.length === 0) {
-        throw new TypeError('At least one Navy instance must be included')
+        throw new TypeError(MSG_NOT_NAVY_ARR)
       }
       
       duplicate = ref.concat()
@@ -121,12 +121,12 @@ class SchemaArr extends Schema {
 
     return this
   }
-  only (ref) {
+  only (ref: SchemaSubclass | Reference) {
     let duplicate = ref
     if (duplicate instanceof Reference) {
       duplicate = new SchemaAny().equal(ref)
     } else if (!(ref instanceof Schema)) {
-      throw new TypeError('The parameter must be a Navy instance')
+      throw new TypeError(MSG_NOT_NAVY)
     }
 
     duplicate.__setParent__(this)

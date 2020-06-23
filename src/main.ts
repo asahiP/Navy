@@ -12,7 +12,7 @@ import { SchemaObj } from './lib/SchemaObj'
 import { isObj } from './lib/utils'
 import { MSG_REF_ONCE, MSG_OBJ_ONLY } from './lib/message'
 
-const trigger = function (status: Status, name: string, ref: any, val: any) {
+const trigger = function (status: string, name: string, ref: any, val: any) {
   const hook = this.__hooks__[status][name]
   hook && hook(ref, val)
 }
@@ -105,7 +105,7 @@ const Navy = {
   object: function () {
     return new SchemaObj()
   },
-  ref: function (key: string, ancestor: number) {
+  ref: function (key: string, ancestor?: number) {
     return new Reference(key, ancestor)
   }
 }

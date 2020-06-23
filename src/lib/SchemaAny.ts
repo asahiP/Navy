@@ -4,30 +4,24 @@ import { Schema } from './Schema'
 import { Rule } from './Rule'
 import { deepCompare } from './utils'
 
-function isEmpty (ref, val: any): boolean {
+function isEmpty (ref: any, val: any): boolean {
   return val === null || val === undefined
 }
 
-function isRequired (ref, val: any): boolean {
+function isRequired (ref: any, val: any): boolean {
   return !isEmpty(ref, val)
 }
 
-function isTruthy (ref, val: any): boolean {
+function isTruthy (ref: any, val: any): boolean {
   return new Boolean(val).valueOf() === true
 }
 
-function isFalsy (ref, val: any): boolean {
+function isFalsy (ref: any, val: any): boolean {
   return new Boolean(val).valueOf() === false
 }
 
-type Name = 'required' | 'empty' | 'equal' | 'truthy' | 'falsy'
 
 class SchemaAny extends Schema {
-  effect (status: Status, name: Name, hook: Hook) {
-    this.__hooks__[status][name] = hook
-
-    return this
-  }
   required () {
     this.__rules__.push(new Rule(isRequired, 'required', null))
 

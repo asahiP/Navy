@@ -8,10 +8,10 @@ import { isObj, omit } from './utils'
 import { MSG_PARAM_NOT_OBJ, MSG_NOT_NAVY_OBJ } from './message'
 
 
-function required (ref, val) {
+function required (ref: any, val: any) {
   return isObj(val)
 }
-function rebuild (ref) {
+function rebuild (ref: any) {
   if (!isObj(ref)) {
     throw new TypeError(MSG_PARAM_NOT_OBJ)
   }
@@ -40,7 +40,7 @@ function rebuild (ref) {
 
   return duplicate
 }
-function keys (ref, val) {
+function keys (ref: any, val: any) {
   if (!isObj(val)) {
     return false
   }
@@ -67,7 +67,7 @@ function keys (ref, val) {
 
   return true
 }
-function optional (ref, val) {
+function optional (ref: any, val: any) {
   if (!isObj(val)) {
     return false
   }
@@ -88,26 +88,22 @@ function optional (ref, val) {
   return true
 }
 
-type Name = 'required'
-  | 'keys' | 'optional'
+interface SchemaSubclass extends Schema {}
+interface SchemaMap {
+  [key: string]: SchemaSubclass | Reference
+}
 
 class SchemaObj extends Schema {
   private __optional__ = {}
   private __keys__ = {}
   private __hasOpational__ = false
   private __hasKeys__ = false
-
-  effect (status: Status, name: Name, hook: Hook) {
-    this.__hooks__[status][name] = hook
-
-    return this
-  }
-  required (ref) {
+  required () {
     this.__rules__.push(new Rule(required, 'required', null))
 
     return this
   }
-  keys (ref) {
+  keys (ref: SchemaMap) {
     let duplicate = rebuild.call(this, ref)
 
     Object.assign(this.__keys__, duplicate)
@@ -121,7 +117,7 @@ class SchemaObj extends Schema {
 
     return this
   }
-  optional (ref) {
+  optional (ref: SchemaMap) {
     let duplicate = rebuild.call(this, ref)
 
     Object.assign(this.__optional__, duplicate)

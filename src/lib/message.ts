@@ -15,6 +15,7 @@ const MSG_REF_NOT_DATE = MSG_REF_NOT`Number、ISOString、Date`
 
 const MSG_PARAM_NOT_ARR = '参数值必须为 Array 类型'
 
+const MSG_NOT_NAVY = '参数值必须为一个 Navy instance'
 const MSG_NOT_NAVY_ARR = '参数值必须为一个包含 Navy instance 的 Array'
 const MSG_NOT_NAVY_OBJ = '参数值必须为一个类型为 { [key: string]: Navy instance } 的 Object'
 
@@ -29,7 +30,7 @@ export {
   MSG_PARAM_NOT_STR, MSG_REF_NOT_STR,
   MSG_PARAM_NOT_DATE, MSG_REF_NOT_DATE,
   MSG_PARAM_NOT_ARR,
-  MSG_NOT_NAVY_ARR, MSG_NOT_NAVY_OBJ,
+  MSG_NOT_NAVY, MSG_NOT_NAVY_ARR, MSG_NOT_NAVY_OBJ,
   MSG_PARAM_NOT_OBJ,
   MSG_OBJ_ONLY, MSG_REF_ONCE
 }

@@ -1,10 +1,5 @@
 'use strict';
 
-// function Reference (key, ancestor) {
-//   this.key = key
-//   this.ancestor = ancestor
-// }
-
 class Reference {
   public key: string
   public ancestor: number
