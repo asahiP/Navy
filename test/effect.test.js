@@ -131,3 +131,14 @@ test('Navy.effect.withArgs', () => {
   expect(t).toBe('123456')
   expect(t2).toBe('123456')
 })
+
+test('Navy.effect.withPlural', () => {
+  let t = 0
+
+  Navy.any()
+    .equal('123')
+    .required()
+      .effect('passed', ['equal', 'required', ['unexpected']], (ref, val) => t += 1)
+    .validate('123')
+  expect(t).toBe(2)
+})

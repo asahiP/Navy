@@ -15,8 +15,8 @@ class Schema {
     return this.__parent__
   }
 
-  effect (status: string, name: string, hook: Function) {
-    this.__hooks__[status][name] = hook
+  effect (status: string, names: string | string[], hook: Function) {
+    [].concat(names).forEach((name: string) => this.__hooks__[status][name] = hook)
 
     return this
   }

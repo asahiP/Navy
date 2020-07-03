@@ -12,7 +12,7 @@ type ObjName = 'required' | 'keys' | 'optional'
 type StrName = 'required' | 'regexp' | 'includes' | 'equal' | 'max' | 'min' | 'length' | 'number'| 'alphabet' | 'alphanum' | 'URL' | 'mail' | 'phone' | 'IDCard'
 
 interface Schema {
-  effect (status: string, name: string, hook: Function): this
+  effect (status: string, name: string | string[], hook: Function): this
   validate (val: any): boolean
 }
 interface SchemaMap {
@@ -21,7 +21,7 @@ interface SchemaMap {
 type SchemaSubclass = SchemaAny | SchemaNum | SchemaStr | SchemaDate | SchemaArr | SchemaObj
 
 interface SchemaAny extends Schema {
-  effect (status: Status, name: AnyName, hook: Hook): this
+  effect (status: Status, name: AnyName | AnyName[], hook: Hook): this
   required (): this
   empty (): this
   equal (ref: any): this
@@ -30,7 +30,7 @@ interface SchemaAny extends Schema {
 }
 
 interface SchemaNum extends Schema {
-  effect (status: Status, name: NumName, hook: Hook): this
+  effect (status: Status, name: NumName | NumName[], hook: Hook): this
   required (): this
   greater (ref: number | Reference): this
   less (ref: number | Reference): this
@@ -45,7 +45,7 @@ interface SchemaNum extends Schema {
 }
 
 interface SchemaStr extends Schema {
-  effect (status: Status, name: StrName, hook: Hook): this
+  effect (status: Status, name: StrName | StrName[], hook: Hook): this
   required (): this
   regexp (ref: RegExp | Reference): this
   includes (ref: string | Reference): this
@@ -63,7 +63,7 @@ interface SchemaStr extends Schema {
 }
 
 interface SchemaDate extends Schema {
-  effect (status: Status, name: DateName, hook: Hook): this
+  effect (status: Status, name: DateName | DateName[], hook: Hook): this
   required (): this
   after (ref: LegalDate | Reference): this
   before (ref: LegalDate | Reference): this
@@ -73,7 +73,7 @@ interface SchemaDate extends Schema {
 }
 
 interface SchemaArr extends Schema {
-  effect (status: Status, name: ArrName, hook: Hook): this
+  effect (status: Status, name: ArrName | ArrName[], hook: Hook): this
   required (): this
   max (ref: number | Reference): this
   min (ref: number | Reference): this
@@ -83,7 +83,7 @@ interface SchemaArr extends Schema {
 }
 
 interface SchemaObj extends Schema {
-  effect (status: Status, name: ObjName, hook: Hook): this
+  effect (status: Status, name: ObjName | ObjName[], hook: Hook): this
   required (): this
   keys (ref: SchemaMap): this
   optional (ref: SchemaMap): this
